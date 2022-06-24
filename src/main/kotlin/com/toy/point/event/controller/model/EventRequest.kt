@@ -21,7 +21,7 @@ data class ReviewRequest(
             action = action,
             reviewId = reviewId,
             content = content,
-            attachedPhotoIds = attachedPhotoIds,
+            attachedPhotoIds = attachedPhotoIds ?: listOf(),
             userId = userId,
             placeId = placeId,
         )
