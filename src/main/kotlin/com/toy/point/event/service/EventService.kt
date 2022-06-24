@@ -4,10 +4,6 @@ import com.querydsl.core.BooleanBuilder
 import com.toy.point.common.exception.BusinessException
 import com.toy.point.common.exception.ErrorCode.EntityError.EntityAlreadyExist
 import com.toy.point.common.exception.ErrorCode.EntityError.EntityNotFound
-import com.toy.point.common.exception.ErrorCode.EventHandleError.EventHandleFail
-import com.toy.point.event.controller.model.EventAction.ADD
-import com.toy.point.event.controller.model.EventAction.DELETE
-import com.toy.point.event.controller.model.EventAction.MOD
 import com.toy.point.event.entity.PointCause.FIRST_REVIEW
 import com.toy.point.event.entity.PointCause.PHOTO
 import com.toy.point.event.entity.PointCause.REVIEW_ITSELF
@@ -15,6 +11,7 @@ import com.toy.point.event.entity.PointHistory
 import com.toy.point.event.entity.QPointHistory
 import com.toy.point.event.repository.PointHistoryRepository
 import com.toy.point.event.service.model.PointAddModel
+import com.toy.point.event.service.model.PointDeleteModel
 import java.util.UUID
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,22 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class EventService(
     private val pointHistoryRepository: PointHistoryRepository,
 ) {
-    fun handleEvents(model: PointAddModel) {
-        try {
-            when (model.action) {
-                ADD -> handleAdd(model)
-                MOD -> handleModify(model)
-                DELETE -> handleDelete(model.reviewId)
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is BusinessException -> throw e
-                else -> throw BusinessException(EventHandleFail, cause = e)
-            }
-        }
-    }
-
-    private fun handleAdd(model: PointAddModel) {
+    fun handleAdd(model: PointAddModel) {
         validateAdd(model)
 
         val pointHistories = getPointHistoriesToSave(model)
@@ -97,8 +79,8 @@ class EventService(
         if(model.attachedPhotoIds.isNotEmpty()) Unit
     }
 
-    private fun handleDelete(reviewId: UUID) {
-        val pointHistories = getPointHistoriesToDelete(reviewId)
+    fun handleDelete(model: PointDeleteModel) {
+        val pointHistories = getPointHistoriesToDelete(model.reviewId)
 
         pointHistories.forEach {
             it.active = true
