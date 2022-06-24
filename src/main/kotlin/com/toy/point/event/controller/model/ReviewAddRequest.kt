@@ -1,9 +1,9 @@
 package com.toy.point.event.controller.model
 
-import com.toy.point.event.service.model.EventModel
+import com.toy.point.event.service.model.PointAddModel
 import java.util.UUID
 
-data class ReviewRequest(
+data class ReviewAddRequest(
     val type: EventCategory,
     val action: EventAction,
     val reviewId: UUID,
@@ -12,8 +12,8 @@ data class ReviewRequest(
     val userId: UUID,
     val placeId: UUID,
 ) {
-    fun toPointModel(): EventModel {
-        return EventModel(
+    fun toPointAddModel(): PointAddModel {
+        return PointAddModel(
             type = type,
             action = action,
             reviewId = reviewId,

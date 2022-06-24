@@ -16,7 +16,7 @@ class PointHistory(
     val userId: UUID,
     @Enumerated(STRING)
     val pointCause: PointCause,
-    var confiscated: Boolean = false,
+    var active: Boolean = true,
 ) : BaseEntity()
 
 enum class PointCause {
