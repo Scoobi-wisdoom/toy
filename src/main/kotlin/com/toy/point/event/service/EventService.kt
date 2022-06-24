@@ -3,6 +3,7 @@ package com.toy.point.event.service
 import com.querydsl.core.BooleanBuilder
 import com.toy.point.common.exception.BusinessException
 import com.toy.point.common.exception.ErrorCode.EntityError.EntityNotFound
+import com.toy.point.common.exception.ErrorCode.EventHandleError.EventHandleFail
 import com.toy.point.event.controller.model.EventAction.ADD
 import com.toy.point.event.controller.model.EventAction.DELETE
 import com.toy.point.event.controller.model.EventAction.MOD
@@ -28,7 +29,7 @@ class EventService(
         } catch (e: Exception) {
             when (e) {
                 is BusinessException -> throw e
-                else -> throw Exception()
+                else -> throw BusinessException(EventHandleFail, cause = e)
             }
         }
     }
