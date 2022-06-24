@@ -79,15 +79,55 @@ class EventService(
     fun handleModify(model: PointModifyModel) {
 
         when (model.isPhotoDeleted) {
-            false -> givePointOnPhoto()
-            true -> takeAwayPointFromPhoto()
+            false -> givePointOnPhoto(model)
+            true -> takeAwayPointFromPhoto(model.reviewId)
         }
     }
 
-    private fun givePointOnPhoto(): Unit {}
+    private fun givePointOnPhoto(model: PointModifyModel) {
+        validateGivingPointOnPhoto(model)
 
-    private fun takeAwayPointFromPhoto(): Unit {}
+        pointHistoryRepository.save(model.toEntityWithPhotoPointCause())
+    }
 
+    private fun validateGivingPointOnPhoto(model: PointModifyModel) {
+        val predicate = BooleanBuilder(
+            QPointHistory.pointHistory.reviewId.eq(model.reviewId)
+                .and(
+                    QPointHistory.pointHistory.pointCause.eq(PHOTO)
+                )
+                .and(
+                    QPointHistory.pointHistory.active.isTrue
+                )
+        )
+
+        val existingPointHistory = findAllByPredicate(predicate)
+        if (existingPointHistory.count() != 0) throw BusinessException(EntityAlreadyExist)
+    }
+
+    private fun takeAwayPointFromPhoto(reviewId: UUID) {
+        val existingPointHistory = getPointHistoryToTakeAwayFromPhoto(reviewId)
+
+        existingPointHistory.active = false
+    }
+
+    private fun getPointHistoryToTakeAwayFromPhoto(reviewId: UUID): PointHistory {
+        val predicate = BooleanBuilder(
+            QPointHistory.pointHistory.reviewId.eq(reviewId)
+                .and(
+                    QPointHistory.pointHistory.pointCause.eq(PHOTO)
+                )
+                .and(
+                    QPointHistory.pointHistory.active.isTrue
+                )
+        )
+
+        val existingPointHistories = findAllByPredicate(predicate)
+
+        if (existingPointHistories.count() < 1) throw BusinessException(EntityNotFound)
+
+        return existingPointHistories.first()
+    }
 
     fun handleDelete(model: PointDeleteModel) {
         val pointHistories = getPointHistoriesToDelete(model.reviewId)
