@@ -10,6 +10,6 @@ data class EventModel(
     val reviewId: UUID,
     val content: String,
     val attachedPhotoIds: List<UUID>,
-    val userId: UUID?,
+    val userId: UUID,
     val placeId: UUID,
 )

@@ -9,10 +9,7 @@ data class ReviewRequest(
     val reviewId: UUID,
     val content: String,
     val attachedPhotoIds: List<UUID>?,
-    /**
-     * 삭제된 user가 작성한 리뷰를 관리자가 삭제하는 요청이 있을 수도 있기 때문에 nullable
-     */
-    val userId: UUID?,
+    val userId: UUID,
     val placeId: UUID,
 ) {
     fun toPointModel(): EventModel {
