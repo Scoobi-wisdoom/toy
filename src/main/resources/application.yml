@@ -9,6 +9,6 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
   datasource:
-    url: ${DB_CONNECTION:jdbc:mysql://localhost:3307}
+    url: ${DB_CONNECTION:jdbc:mysql://localhost:3307/point}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
