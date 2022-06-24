@@ -12,7 +12,7 @@ sealed class ErrorCode(val errorCode: String, val httpStatus: HttpStatus, val me
 
     sealed class EntityError(errorCode: String, httpStatus: HttpStatus, message: String) :
         ErrorCode(errorCode, httpStatus, message) {
-            object EntityAlreadyExist: EntityError("EE-100", BAD_REQUEST, "동일한 개체가 존재합니다.")
+            object EntityNotFound: EntityError("EE-100", BAD_REQUEST, "대상을 찾을 수 없습니다.")
         }
 
     fun buildMessage() = "[$errorCode]$message"
