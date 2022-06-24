@@ -12,6 +12,7 @@ import com.toy.point.event.entity.QPointHistory
 import com.toy.point.event.repository.PointHistoryRepository
 import com.toy.point.event.service.model.PointAddModel
 import com.toy.point.event.service.model.PointDeleteModel
+import com.toy.point.event.service.model.PointModifyModel
 import java.util.UUID
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -75,9 +76,18 @@ class EventService(
         return reviews.count() == 0
     }
 
-    private fun handleModify(model: PointAddModel) {
-        if(model.attachedPhotoIds.isNotEmpty()) Unit
+    fun handleModify(model: PointModifyModel) {
+
+        when (model.isPhotoDeleted) {
+            false -> givePointOnPhoto()
+            true -> takeAwayPointFromPhoto()
+        }
     }
+
+    private fun givePointOnPhoto(): Unit {}
+
+    private fun takeAwayPointFromPhoto(): Unit {}
+
 
     fun handleDelete(model: PointDeleteModel) {
         val pointHistories = getPointHistoriesToDelete(model.reviewId)
