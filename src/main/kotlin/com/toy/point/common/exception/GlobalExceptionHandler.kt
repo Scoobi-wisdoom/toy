@@ -1,7 +1,7 @@
 package com.toy.point.common.exception
 
-import com.toy.point.common.exception.ErrorCode.UnKnown.ErrorUnKnown
 import java.time.OffsetDateTime
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestController
@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice(annotations = [RestController::class])
 class GlobalExceptionHandler {
-    @ExceptionHandler(Exception::class)
-    protected fun defaultErrorHandler(): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.internalServerError()
+    @ExceptionHandler(BusinessException::class)
+    protected fun businessErrorHandler(
+        e: BusinessException,
+    ): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.badRequest()
             .body(
                 ErrorResponse(
-                    message = ErrorUnKnown.buildMessage(),
-                    errorCode = ErrorUnKnown.errorCode,
+                    status = e.status,
+                    message = e.message,
+                    errorCode = e.code
                 )
             )
     }
@@ -23,6 +26,7 @@ class GlobalExceptionHandler {
 
 data class ErrorResponse(
     val timestamp: OffsetDateTime = OffsetDateTime.now(),
+    val status: HttpStatus,
     val message: String?,
     val errorCode: String,
 )
