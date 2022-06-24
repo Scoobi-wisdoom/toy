@@ -35,6 +35,7 @@ dependencies {
         exclude(group = "org.mockito", module = "mockito-core")
         exclude(group = "org.mockito", module = "mockito-junit-jupiter")
     }
+    testImplementation("io.mockk:mockk:1.11.0")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.querydsl:querydsl-apt:$querydslVersion")
